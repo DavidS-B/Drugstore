@@ -141,9 +141,40 @@ app.post("/drugs/quantity", async (req, res) => {
   query.findOne(function(err, drug) {
     if (err) return handleError(err);
     if (drug) {
-      res.send(drug);
+      res.send({ quantity: drug.quantity });
     }
   });
+});
+
+/* ============> Change Drug Name <============ */
+app.post("/drugs/updateName", async (req, res) => {
+  try {
+    if (req.body.id && req.body.newName) {
+      const drug = await Drugs.findOne({ _id: req.body.id });
+      drug.name = req.body.newName;
+      await drug.save();
+      res.json({ message: "Updated" });
+    } else {
+      res.status(400).json({ message: "Missing parameter" });
+    }
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+/* ============> Delete Drug <============ */
+app.post("/drugs/deleteDrug", async (req, res) => {
+  try {
+    if (req.body.id) {
+      const drug = await Drugs.findOne({ _id: req.body.id });
+      await drug.remove();
+      res.json({ message: "Removed" });
+    } else {
+      res.status(400).json({ message: "Missing id" });
+    }
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
 });
 
 app.listen(3000, () => {
