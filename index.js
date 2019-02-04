@@ -5,10 +5,9 @@ const mongoose = require("mongoose");
 const app = express();
 app.use(bodyParser.json());
 
-mongoose.connect(
-  "mongodb://localhost/Drugstore",
-  { useNewUrlParser: true }
-);
+mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/Drugstore", {
+  useNewUrlParser: true
+});
 
 const Drugs = mongoose.model("Drugs", {
   name: {
@@ -177,6 +176,6 @@ app.post("/drugs/deleteDrug", async (req, res) => {
   }
 });
 
-app.listen(3000, () => {
+app.listen(process.env.PORT || 3000, () => {
   console.log("Server started");
 });
